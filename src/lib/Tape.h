@@ -7,10 +7,11 @@
 #define M 100
 
 class Tape {
-	size_t position{};
-	int32_t cells[M]{};
+	uint32_t id;
+	size_t current_position;
+	int32_t cells[M]{0};
 public:
-	explicit Tape() : position(0) {}
+	explicit Tape();
 
 	explicit Tape(const std::string& input_file);
 
