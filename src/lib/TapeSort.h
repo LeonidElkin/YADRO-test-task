@@ -1,9 +1,9 @@
-#ifndef YADRO_TEST_TASK_TAPESORT_H
-#define YADRO_TEST_TASK_TAPESORT_H
+#ifndef TAPESORT_H
+#define TAPESORT_H
 
 #include "Tape.h"
 
-template <size_t ram_limit = DEFAULT_RAM_LIMIT>
+template<size_t ram_limit = DEFAULT_RAM_LIMIT>
 class TapeSort {
 	Tape<ram_limit> input_tape;
 public:
@@ -13,4 +13,4 @@ public:
 };
 
 
-#endif //YADRO_TEST_TASK_TAPESORT_H
+#endif //TAPESORT_H

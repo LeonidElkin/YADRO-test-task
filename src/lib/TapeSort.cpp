@@ -1,7 +1,3 @@
-//
-// Created by Aorus on 20.05.2024.
-//
-
 #include "TapeSort.h"
 #include <climits>
 

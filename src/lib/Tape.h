@@ -1,18 +1,18 @@
-#ifndef YADRO_TEST_TASK_TAPE_H
-#define YADRO_TEST_TASK_TAPE_H
+#ifndef TAPE_H
+#define TAPE_H
 
 #include <cinttypes>
 #include <fstream>
 
 #define DEFAULT_RAM_LIMIT 400
 
-template <size_t ram_limit = DEFAULT_RAM_LIMIT>
+template<size_t ram_limit = DEFAULT_RAM_LIMIT>
 class Tape {
 private:
 	uint32_t id;
 	size_t current_position;
 	size_t size;
-	int32_t cells[ram_limit/4]{0};
+	int32_t cells[ram_limit / 4]{0};
 
 	void insert_page_to_ctx(const std::string &page_id);
 
@@ -43,4 +43,4 @@ public:
 };
 
 
-#endif //YADRO_TEST_TASK_TAPE_H
+#endif //TAPE_H
