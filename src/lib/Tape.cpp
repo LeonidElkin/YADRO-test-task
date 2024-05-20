@@ -39,11 +39,14 @@ void Tape<ram_limit>::insert_page_to_ctx(const std::string &page_id) {
 }
 
 template<size_t ram_limit>
-Tape<ram_limit>::Tape(size_t size) : id(initiate_tape_id()), current_position(0), size(size) {}
+Tape<ram_limit>::Tape(size_t size) : id(initiate_tape_id()), current_position(0), size(size) {
+	if (ram_limit % 4 != 0) throw std::runtime_error("ram_limit must be divible by 4");
+}
 
 template<size_t ram_limit>
 Tape<ram_limit>::Tape(const std::string &input_file, size_t size) : id(initiate_tape_id()), current_position(0),
 																	size(size) {
+	if (ram_limit % 4 != 0) throw std::runtime_error("ram_limit must be divible by 4");
 	std::fstream input_stream;
 	if (!std::filesystem::exists(input_file)) throw std::runtime_error("Incorrect input tape was given");
 	input_stream.open(input_file, std::ios::binary | std::ios::in);
@@ -55,9 +58,20 @@ Tape<ram_limit>::Tape(const std::string &input_file, size_t size) : id(initiate_
 		std::filesystem::create_directory("tmp/" + std::to_string(id) + "/");
 
 		for (int i = 0; !input_stream.eof(); i++) {
-			input_stream.read(reinterpret_cast<char *>(buffer), ram_limit);
+			input_stream.read(reinterpret_cast<char *>(buffer), sizeof(buffer));
 			if (i == 0) std::copy(std::begin(buffer), std::end(buffer), std::begin(this->cells));
-			else insert_page_to_ctx(std::to_string(i));
+			else {
+				std::fstream output_stream;
+				output_stream.open("tmp/" + std::to_string(id) + "/tmp_tape" + std::to_string(i) + ".tmp",
+								   std::ios::binary | std::ios::out);
+
+				if (output_stream) {
+					output_stream.write(reinterpret_cast<char *>(buffer), sizeof(buffer));
+					output_stream.close();
+				} else {
+					throw std::runtime_error("Couldn't open the output tape file during insertion to the context\n");
+				}
+			}
 			if (input_stream.eof() && this->size == 0) this->size = (i * ram_limit + input_stream.gcount()) / 4;
 			if (i * ram_limit / 4 > size && size != 0) break;
 		}
@@ -68,11 +82,11 @@ Tape<ram_limit>::Tape(const std::string &input_file, size_t size) : id(initiate_
 	}
 }
 
-template<size_t ram_limit>
-Tape<ram_limit>::~Tape() {
-	std::filesystem::remove_all("tmp/" + std::to_string(id));
-	if (std::filesystem::is_empty("tmp")) std::filesystem::remove("tmp");
-}
+//template<size_t ram_limit>
+//Tape<ram_limit>::~Tape() {
+//	std::filesystem::remove_all("tmp/" + std::to_string(id));
+//	if (std::filesystem::is_empty("tmp")) std::filesystem::remove("tmp");
+//}
 
 template<size_t ram_limit>
 int32_t Tape<ram_limit>::read() const {
@@ -116,6 +130,27 @@ void Tape<ram_limit>::move_left() {
 	this->current_position--;
 }
 
+
+template<size_t ram_limit>
+void Tape<ram_limit>::to_bin(const std::string &output_file) {
+	std::fstream output_stream;
+	output_stream.open(output_file, std::ios::binary | std::ios::out);
+	size_t border = this->size % (ram_limit / 4) == 0 ? this->size / (ram_limit / 4) : this->size / (ram_limit / 4) + 1;
+	if (output_stream) {
+		for (int i = 0; i < border; i++) {
+			output_stream.write(reinterpret_cast<char *>(this->cells), sizeof(this->cells));
+			for (int j = 0; j < ram_limit / 4; j++) {
+				try {
+					this->move_right();
+				} catch (std::out_of_range &e) {}
+			}
+		}
+		output_stream.close();
+	} else {
+		throw std::runtime_error("Couldn't open the output tape file\n");
+	}
+}
+
 template<size_t ram_limit>
 uint32_t Tape<ram_limit>::get_id() const { return this->id; }
 
@@ -124,3 +159,7 @@ size_t Tape<ram_limit>::get_current_position() const { return this->current_posi
 
 template<size_t ram_limit>
 size_t Tape<ram_limit>::get_size() const { return this->size; }
+
+
+template
+class Tape<400ull>;

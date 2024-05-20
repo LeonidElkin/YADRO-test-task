@@ -25,7 +25,9 @@ public:
 
 	explicit Tape(const std::string &input_file, size_t size = 0);
 
-	~Tape();
+	void to_bin(const std::string &output_file);
+
+//	~Tape();
 
 	[[nodiscard]] int32_t read() const;
 

@@ -59,4 +59,8 @@ Tape<ram_limit> TapeSort<ram_limit>::sort() {
 		previous_min = min;
 		previous_min_pos = min_position;
 	}
+	return output_tape;
 }
+
+
+template class TapeSort<400ull>;
