@@ -1,1 +1,3 @@
-add_library(Tape STATIC Tape.h Tape.cpp)
+add_library(Tape STATIC Tape.h Tape.cpp
+        TapeSort.cpp
+        TapeSort.h)

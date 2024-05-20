@@ -29,15 +29,17 @@ public:
 
 	[[nodiscard]] int32_t read() const;
 
+	[[nodiscard]] uint32_t get_id() const;
+
+	[[nodiscard]] size_t get_current_position() const;
+
+	[[nodiscard]] size_t get_size() const;
+
 	void write(int32_t new_value);
 
 	void move_right();
 
 	void move_left();
-
-	Tape algo();
-
-	uint32_t get_id() const;
 };
 
 

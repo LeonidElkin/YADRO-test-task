@@ -117,13 +117,10 @@ void Tape<ram_limit>::move_left() {
 }
 
 template<size_t ram_limit>
-Tape<ram_limit> Tape<ram_limit>::algo() {
-	//TODO: sort algo
-	return Tape("dfjkd");
-}
+uint32_t Tape<ram_limit>::get_id() const { return this->id; }
 
 template<size_t ram_limit>
-uint32_t Tape<ram_limit>::get_id() const {
-	return this->id;
-}
+size_t Tape<ram_limit>::get_current_position() const { return this->current_position; }
 
+template<size_t ram_limit>
+size_t Tape<ram_limit>::get_size() const { return this->size; }
